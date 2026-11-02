@@ -10,16 +10,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Baseline rules
-
-Pair or king: raise, then check, call, fold in legal preference order.
-Unpaired queen: check, call, fold, raise.
-Unpaired jack: check, fold, call, raise.
-
-The baseline uses its own card and the public card, with no opponent modeling or 
-learning.
-
-### Environment
+## Environment
 
 The default number of games is 100 and the default seed is 42:
 
@@ -28,7 +19,7 @@ python main.py --num-games 100 --seed 42 --opponent random
 python main.py --num-games 100 --seed 42 --opponent random rule_based --switch-every 25
 ```
 
-Each invocation creates a new `results/run-*` directory.
+Each run creates a new `results/run-*` directory.
 `config.json` records the seeds, opponent schedule, action mapping, and game count.
 `hands.csv` records strategy labels, changes, action counts, and final payoffs.
 `actions.csv` records pre-action public cards, total committed chips (`pot`),
@@ -42,3 +33,12 @@ The first hand is not marked as a switch. No private cards are written to logs.
 ```sh
 python -m unittest discover -s tests -v
 ```
+
+## Baseline rules
+
+Pair or king: raise, then check, call, fold in legal preference order.
+Unpaired queen: check, call, fold, raise.
+Unpaired jack: check, fold, call, raise.
+
+The baseline uses its own card and the public card, with no opponent modeling or 
+learning.
