@@ -1,0 +1,17 @@
+{
+  "game": "leduc-holdem",
+  "num_games": 100,
+  "seed": 42,
+  "opponent_seed": 43,
+  "opponents": [
+    "random"
+  ],
+  "switch_every": 25,
+  "baseline_seat": 0,
+  "action_names": [
+    "call",
+    "raise",
+    "fold",
+    "check"
+  ]
+}
