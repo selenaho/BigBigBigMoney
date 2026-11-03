@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 import rlcard
-from agents.rule_based_agent import RuleBasedAgent
+from agents.rl_agent import LinUCBAgent
 from opponents.strategies import OpponentAgent, build_policy_registry
 from opponents.switching_controller import SwitchingController
 
@@ -26,9 +26,9 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
     unknown = set(opponent_names) - registry.keys()
     if unknown:
         raise ValueError(f'Unknown opponent policies: {sorted(unknown)}')
-    baseline = RuleBasedAgent(env.actions)
+    learner = LinUCBAgent(env.actions)
     opponent = OpponentAgent(registry[opponent_names[0]], seed=seed + 1)
-    agents = [baseline, opponent]
+    agents = [learner, opponent]
     env.set_agents(agents)
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
@@ -36,7 +36,8 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
     run_id = run_dir.name
     config = {'game': 'leduc-holdem', 'num_games': num_games, 'seed': seed,
               'opponent_seed': seed + 1, 'opponents': list(opponent_names),
-              'switch_every': switch_every, 'baseline_seat': 0,
+              'switch_every': switch_every, 'learner': 'linucb', 'learner_seat': 0,
+              'linucb_alpha': learner.alpha,
               'action_names': list(env.actions)}
     (run_dir / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
     hand_fields = ['run_id', 'seed', 'hand_id', 'agent_0', 'agent_1',
@@ -74,17 +75,18 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
                 })
                 state, player_id = env.step(action)
             payoffs = env.get_payoffs()
+            learner.observe_reward(payoffs[0])
             total += float(payoffs[0])
             hands.writerow({
                 'run_id': run_id, 'seed': seed, 'hand_id': index + 1,
-                'agent_0': 'rule_based', 'agent_1': strategy,
+                'agent_0': 'linucb', 'agent_1': strategy,
                 'opponent_strategy': strategy,
                 'switched': int(previous is not None and previous != strategy),
                 'num_actions': decision, 'agent_0_payoff': float(payoffs[0]),
                 'agent_1_payoff': float(payoffs[1]),
             })
             previous = strategy
-    print(f'Completed {num_games} hands; baseline average payoff: {total / num_games:.3f}')
+    print(f'Completed {num_games} hands; LinUCB average payoff: {total / num_games:.3f}')
     print(f'Logs saved to {run_dir}')
     return run_dir
 

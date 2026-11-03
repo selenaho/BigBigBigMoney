@@ -1,0 +1,362 @@
+run_id,hand_id,decision_index,player_id,public_card,pot,player_chips,legal_actions,action_id,action
+run-daw221gm,1,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,1,2,0,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,1,3,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,1,4,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,1,5,1,SK,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,1,6,0,SK,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,1,7,1,SK,16,6,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,2,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,2,2,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,2,3,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,2,4,1,SK,12,6,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,3,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,4,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,5,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,5,2,0,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,5,3,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,5,4,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,5,5,1,SQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,5,6,0,SQ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,5,7,1,SQ,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,5,8,0,SQ,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,6,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,7,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,7,2,0,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,7,3,1,,6,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,8,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,8,2,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,8,3,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,8,4,1,SK,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,8,5,0,SK,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,8,6,1,SK,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,8,7,0,SK,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,9,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,10,1,0,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,11,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,11,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,11,3,0,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,11,4,1,SK,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,12,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,12,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,13,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,13,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,13,3,1,SK,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,13,4,0,SK,8,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,14,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,14,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,14,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,14,4,1,SJ,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,14,5,0,SJ,12,4,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,15,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,15,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,16,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,16,2,0,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,17,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,17,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,17,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,17,4,1,HQ,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,17,5,0,HQ,12,4,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,18,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,19,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,19,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,20,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,20,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,20,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,20,4,1,HQ,8,4,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,21,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,22,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,23,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,23,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,24,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,24,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,24,3,0,SQ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,24,4,1,SQ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,24,5,0,SQ,8,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,25,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,25,2,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,25,3,1,SK,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,25,4,0,SK,12,4,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,25,5,1,SK,20,8,"[""call"", ""fold""]",0,call
+run-daw221gm,26,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,26,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,26,3,0,HJ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,26,4,1,HJ,8,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,27,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,27,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,27,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,27,4,1,HK,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,27,5,0,HK,12,4,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,27,6,1,HK,20,8,"[""call"", ""fold""]",0,call
+run-daw221gm,28,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,28,2,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,28,3,1,HJ,8,4,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,29,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,29,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,29,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,29,4,1,HJ,8,4,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,29,5,0,HJ,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,29,6,1,HJ,12,4,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,30,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,30,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,30,3,0,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,30,4,1,HJ,8,4,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,30,5,0,HJ,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,30,6,1,HJ,12,4,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,31,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,31,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,31,3,0,HQ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,31,4,1,HQ,8,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,32,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,32,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,32,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,32,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,32,5,0,SQ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,32,6,1,SQ,16,6,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,33,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,33,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,34,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,35,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,35,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,35,3,0,SJ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,35,4,1,SJ,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,35,5,0,SJ,16,6,"[""call"", ""fold""]",2,fold
+run-daw221gm,36,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,36,2,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,36,3,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,36,4,1,SK,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,36,5,0,SK,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,36,6,1,SK,16,6,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,37,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,38,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,38,2,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,38,3,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,38,4,1,HJ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,38,5,0,HJ,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,38,6,1,HJ,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,39,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,39,2,1,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,39,3,0,SJ,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,39,4,1,SJ,12,4,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,39,5,0,SJ,20,8,"[""call"", ""fold""]",0,call
+run-daw221gm,40,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,40,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,40,3,1,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,40,4,0,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,41,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,41,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,41,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,42,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,43,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,43,2,0,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,44,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,45,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,46,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,46,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,46,3,1,HJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,46,4,0,HJ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,46,5,1,HJ,8,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,47,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,47,2,0,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,47,3,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,47,4,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,47,5,1,SJ,12,6,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,48,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,49,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,49,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,50,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,50,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,50,3,0,SJ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,50,4,1,SJ,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,50,5,0,SJ,16,6,"[""call"", ""fold""]",0,call
+run-daw221gm,51,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,51,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,51,3,1,SK,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,52,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,52,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,52,3,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,52,4,0,HK,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,52,5,1,HK,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,52,6,0,HK,24,10,"[""call"", ""fold""]",2,fold
+run-daw221gm,53,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,53,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,53,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,53,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,53,5,0,SJ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,53,6,1,SJ,16,6,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,54,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,54,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,54,3,0,HK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,54,4,1,HK,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,54,5,0,HK,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,54,6,1,HK,16,6,"[""call"", ""fold""]",2,fold
+run-daw221gm,55,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,55,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,55,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,55,4,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,56,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,56,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,57,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,57,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,57,3,0,SJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,57,4,1,SJ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,57,5,0,SJ,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,57,6,1,SJ,16,6,"[""call"", ""fold""]",0,call
+run-daw221gm,58,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,58,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,58,3,1,HQ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,58,4,0,HQ,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,58,5,1,HQ,16,6,"[""call"", ""fold""]",0,call
+run-daw221gm,59,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,59,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,59,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,59,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,59,5,0,HQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,59,6,1,HQ,12,6,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,60,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,60,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,60,3,1,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,60,4,0,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,61,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,62,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,62,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,62,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,63,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,63,2,1,,6,2,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,64,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,64,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,64,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,65,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,65,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,65,3,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,65,4,0,SJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,65,5,1,SJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,66,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,66,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,66,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,66,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,66,5,0,HJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,66,6,1,HJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,67,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,67,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,67,3,1,SQ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,67,4,0,SQ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,68,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,68,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,68,3,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,68,4,0,HQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,68,5,1,HQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,69,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,70,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,70,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,70,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,71,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,72,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,73,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,73,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,73,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,74,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,74,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,74,3,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,75,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,75,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,75,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,75,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,75,5,0,SJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,75,6,1,SJ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,76,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,76,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,76,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,76,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,76,5,0,SQ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,76,6,1,SQ,16,6,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,77,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,77,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,77,3,0,SK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,77,4,1,SK,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,77,5,0,SK,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,77,6,1,SK,16,6,"[""call"", ""fold""]",0,call
+run-daw221gm,78,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,78,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,79,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,79,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,79,3,1,SQ,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,80,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,80,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,80,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,80,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,80,5,0,SK,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,80,6,1,SK,12,6,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,81,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,81,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,82,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,82,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,82,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,82,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,82,5,0,SQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,82,6,1,SQ,12,6,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,83,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,84,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,84,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,84,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,84,4,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,84,5,0,SK,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,84,6,1,SK,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,84,7,0,SK,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,84,8,1,SK,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,85,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,85,2,1,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,85,3,0,HJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,85,4,1,HJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,86,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,87,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,88,1,1,,3,1,"[""call"", ""raise"", ""fold""]",2,fold
+run-daw221gm,89,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,89,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,89,3,1,HK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,89,4,0,HK,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,90,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,90,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,91,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,91,2,1,,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,92,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,92,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,92,3,1,SQ,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,92,4,0,SQ,8,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,92,5,1,SQ,16,6,"[""call"", ""fold""]",2,fold
+run-daw221gm,93,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,93,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,93,3,1,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,93,4,0,HQ,12,6,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,93,5,1,HQ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,93,6,0,HQ,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,93,7,1,HQ,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,94,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,94,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,94,3,1,HJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,94,4,0,HJ,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,95,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,95,2,1,,6,2,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,95,3,0,SK,8,4,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,95,4,1,SK,8,4,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,95,5,0,SK,12,4,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,95,6,1,SK,20,8,"[""call"", ""fold""]",2,fold
+run-daw221gm,96,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,96,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,96,3,1,HJ,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,97,1,0,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,97,2,1,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,97,3,0,,10,4,"[""call"", ""fold""]",0,call
+run-daw221gm,97,4,1,SQ,12,6,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,97,5,0,SQ,16,6,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,97,6,1,SQ,24,10,"[""call"", ""fold""]",0,call
+run-daw221gm,98,1,1,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,98,2,0,,4,2,"[""raise"", ""fold"", ""check""]",3,check
+run-daw221gm,98,3,1,HK,4,2,"[""raise"", ""fold"", ""check""]",2,fold
+run-daw221gm,99,1,0,,3,1,"[""call"", ""raise"", ""fold""]",0,call
+run-daw221gm,99,2,1,,4,2,"[""raise"", ""fold"", ""check""]",1,raise
+run-daw221gm,99,3,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,99,4,1,,10,4,"[""call"", ""fold""]",2,fold
+run-daw221gm,100,1,1,,3,1,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,100,2,0,,6,2,"[""call"", ""raise"", ""fold""]",1,raise
+run-daw221gm,100,3,1,,10,4,"[""call"", ""fold""]",2,fold

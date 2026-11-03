@@ -1,0 +1,19 @@
+{
+  "game": "leduc-holdem",
+  "num_games": 100,
+  "seed": 42,
+  "opponent_seed": 43,
+  "opponents": [
+    "random"
+  ],
+  "switch_every": 25,
+  "learner": "linucb",
+  "learner_seat": 0,
+  "linucb_alpha": 1.0,
+  "action_names": [
+    "call",
+    "raise",
+    "fold",
+    "check"
+  ]
+}
