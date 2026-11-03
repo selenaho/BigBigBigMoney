@@ -12,6 +12,39 @@ from opponents.switching_controller import SwitchingController
 
 
 class IntegrationTests(unittest.TestCase):
+    def test_agent_parameter_selects_player_zero_only(self):
+        class RecordingAgent(RuleBasedAgent):
+            def __init__(self, actions):
+                super().__init__(actions)
+                self.rewards = []
+
+            def observe_reward(self, reward):
+                self.rewards.append(float(reward))
+
+        instance = RecordingAgent(rlcard.make('leduc-holdem').actions)
+        with tempfile.TemporaryDirectory() as directory:
+            for selected, label in [('rule_based', 'rule_based'), ('linucb', 'linucb'),
+                                    (instance, 'RecordingAgent')]:
+                output = run_simulation(num_games=12, agent=selected,
+                                        opponent_names=['random', 'rule_based'],
+                                        switch_every=3, output_dir=directory)
+                with (output / 'hands.csv').open() as f:
+                    hands = list(csv.DictReader(f))
+                self.assertEqual({h['agent_0'] for h in hands}, {label})
+                self.assertEqual([h['agent_1'] for h in hands],
+                                 ['random'] * 3 + ['rule_based'] * 3
+                                 + ['random'] * 3 + ['rule_based'] * 3)
+                self.assertEqual([int(h['hand_id']) for h in hands if h['switched'] == '1'],
+                                 [4, 7, 10])
+                config = json.loads((output / 'config.json').read_text())
+                self.assertEqual(config['learner'], label)
+                self.assertEqual(config['learner_seat'], 0)
+                if selected is instance:
+                    self.assertEqual(instance.rewards, [float(h['agent_0_payoff']) for h in hands])
+            for invalid in ['unknown', object()]:
+                with self.assertRaises(ValueError):
+                    run_simulation(agent=invalid, output_dir=directory)
+
     def test_hand_rules_and_legal_fallback(self):
         env = rlcard.make('leduc-holdem')
         agent = RuleBasedAgent(env.actions)

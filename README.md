@@ -1,6 +1,6 @@
 # BigBigBigMoney
 
-RLCard Leduc Hold'em, two players. Player 0 only uses the fixed rule-based baseline agent. Player 1 uses a registered opponent policy. 
+RLCard Leduc Hold'em, two players. Player 0 is the evaluated agent (rule-based, LinUCB, or Bayesian). Player 1 uses the six controlled opponent policies and switches between them. 
 
 ## Installation
 
@@ -15,8 +15,9 @@ pip install -r requirements.txt
 The default number of games is 100 and the default seed is 42:
 
 ```sh
-python main.py --num-games 100 --seed 42 --opponent random
-python main.py --num-games 100 --seed 42 --opponent random rule_based --switch-every 25
+python main.py --agent rule_based --opponent random --switch-every 25 --num-games 100 --seed 42
+python main.py --agent linucb --opponent random --switch-every 25 --num-games 100 --seed 42
+python main.py --agent bayesian --opponent random --switch-every 25 --num-games 100 --seed 42
 ```
 
 Each run creates a new `results/run-*` directory.
