@@ -3,6 +3,7 @@
 import random
 from typing import Protocol
 from agents.rule_based_agent import RuleBasedAgent
+from opponents.styles import STRATEGY_NAMES, StylePolicy
 
 
 class OpponentPolicy(Protocol):
@@ -42,6 +43,6 @@ class OpponentAgent:
 
 
 def build_policy_registry(action_names):
-    return {'random': RandomPolicy(), 
-            'rule_based': RuleBasedPolicy(action_names)
-            }
+    registry = {'random': RandomPolicy(), 'rule_based': RuleBasedPolicy(action_names)}
+    registry.update({name: StylePolicy(name, action_names) for name in STRATEGY_NAMES})
+    return registry

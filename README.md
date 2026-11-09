@@ -43,3 +43,24 @@ Unpaired jack: check, fold, call, raise.
 
 The baseline uses its own card and the public card, with no opponent modeling or 
 learning.
+
+## Standard Bayesian agent
+
+Starts with equal probabilities for six opponent styles: `tight_aggressive`,
+`loose_aggressive`, `tight_passive`, `loose_passive`, `maniac`, and `calling_station`.
+Updates beliefs after each opponent action and retains all historical evidence.
+Opponent private cards and true strategy labels are hidden from the agent.
+
+```sh
+python main.py --agent bayesian --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
+```
+
+The first step automatically trains action likelihoods using 2,000 simulated hands
+per style. Adjust this with `--calibration-hands`, or reuse a saved model with
+`--likelihood-model results/run-XXXX/likelihoods.json`.
+
+Actions maximize estimated chip payoff using possible opponent hands and predicted
+responses. Planning considers one opponent response followed by a showdown estimate.
+
+Bayesian runs additionally save `likelihoods.json` (trained model), `beliefs.csv`
+(strategy probabilities), and `decisions.csv` (action values and timing).

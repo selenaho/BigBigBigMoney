@@ -1,10 +1,14 @@
 import argparse
 import csv
 import json
+import math
 import tempfile
+import time
 from pathlib import Path
 import rlcard
-# from agents.bayesian_agent import BayesianAgent
+from agents.bayesian_agent import BayesianAgent
+from agents.bayesian_model import ActionLikelihoodModel
+from experiments.calibrate_bayesian import calibrate_likelihoods
 from agents.rl_agent import LinUCBAgent
 from agents.rule_based_agent import RuleBasedAgent
 from opponents.strategies import OpponentAgent, build_policy_registry
@@ -18,7 +22,7 @@ def positive_int(value):
     return number
 
 
-def build_evaluated_agent(agent, action_names):
+def build_evaluated_agent(agent, action_names, *, likelihood_model=None):
     """Select player 0's strategy"""
     if isinstance(agent, str):
         name = agent
@@ -27,7 +31,7 @@ def build_evaluated_agent(agent, action_names):
         elif agent == 'linucb':
             agent = LinUCBAgent(action_names)
         elif agent == 'bayesian':
-            agent = BayesianAgent(action_names)
+            agent = BayesianAgent(action_names, likelihood_model=likelihood_model)
         else:
             raise ValueError(f'Unknown player-0 agent: {agent}')
     else:
@@ -38,7 +42,8 @@ def build_evaluated_agent(agent, action_names):
 
 
 def run_simulation(num_games=100, seed=42, opponent_names=('random',),
-                   switch_every=25, output_dir='results', policy_registry=None, *, agent='rule-based'):
+                   switch_every=25, output_dir='results', policy_registry=None, *, agent='rule_based',
+                   likelihood_path=None, calibration_hands=2000, calibration_seed=1729):
     """Evaluate one player-0 agent against switching player-1 policies.
 
     agent is rule_based, linucb, or bayesian.
@@ -53,7 +58,12 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
     unknown = set(opponent_names) - registry.keys()
     if unknown:
         raise ValueError(f'Unknown opponent policies: {sorted(unknown)}')
-    learner, agent_name = build_evaluated_agent(agent, env.actions)
+    model = None
+    if isinstance(agent, str) and agent == 'bayesian':
+        model = (ActionLikelihoodModel.load(likelihood_path) if likelihood_path else
+                 calibrate_likelihoods(env.actions, calibration_hands, calibration_seed))
+    learner, agent_name = build_evaluated_agent(
+        agent, env.actions, likelihood_model=model)
     opponent = OpponentAgent(registry[opponent_names[0]], seed=seed + 1)
     agents = [learner, opponent]
     env.set_agents(agents)
@@ -67,6 +77,13 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
               'action_names': list(env.actions)}
     if isinstance(learner, LinUCBAgent):
         config['linucb_alpha'] = learner.alpha
+    if isinstance(learner, BayesianAgent):
+        config['bayesian'] = {'variant': 'standard',
+                              'strategies': list(learner.belief.strategies),
+                              'prior': learner.belief.prior.tolist(),
+                              'calibration': learner.likelihood_model.training,
+                              'planner': 'one response then showdown; optimal fold/call to raise'}
+        learner.likelihood_model.save(run_dir / 'likelihoods.json')
     (run_dir / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
     hand_fields = ['run_id', 'seed', 'hand_id', 'agent_0', 'agent_1',
                    'opponent_strategy', 'switched', 'num_actions',
@@ -74,21 +91,42 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
     action_fields = ['run_id', 'hand_id', 'decision_index', 'player_id',
                      'public_card', 'pot', 'player_chips', 'legal_actions',
                      'action_id', 'action']
+    belief_fields = ['run_id', 'hand_id', 'decision_index', 'observed_action',
+                     'observations', 'posterior', 'entropy']
     total = 0.0
     previous = None
     with (run_dir / 'hands.csv').open('w', newline='') as hf, \
-            (run_dir / 'actions.csv').open('w', newline='') as af:
+            (run_dir / 'actions.csv').open('w', newline='') as af, \
+            (run_dir / 'beliefs.csv').open('w', newline='') as bf, \
+            (run_dir / 'decisions.csv').open('w', newline='') as df:
         hands = csv.DictWriter(hf, fieldnames=hand_fields)
         actions = csv.DictWriter(af, fieldnames=action_fields)
+        beliefs = csv.DictWriter(bf, fieldnames=belief_fields)
+        decisions = csv.DictWriter(df, fieldnames=['run_id', 'hand_id', 'decision_index',
+                                                   'seconds', 'expected_utilities', 'posterior'])
+        beliefs.writeheader()
+        decisions.writeheader()
         hands.writeheader()
         actions.writeheader()
         for index in range(num_games):
             strategy = schedule.strategy_for_hand(index)
             opponent.policy = registry[strategy]
             state, player_id = env.reset()
+            begin_hook = getattr(learner, 'begin_hand', None)
+            if callable(begin_hook):
+                begin_hook(env.get_state(0))
+            street_history = []
+            previous_public = state['raw_obs']['public_card']
             decision = 0
             while not env.is_over():
+                public = state['raw_obs']['public_card']
+                if public != previous_public:
+                    street_history = []
+                    previous_public = public
+                state['street_action_record'] = list(street_history)
+                started = time.perf_counter()
                 action = agents[player_id].step(state)
+                elapsed = time.perf_counter() - started
                 if action not in state['legal_actions']:
                     raise ValueError(f'Illegal action from player {player_id}')
                 decision += 1
@@ -101,6 +139,30 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
                     'legal_actions': json.dumps([env.actions[i] for i in state['legal_actions']]),
                     'action_id': action, 'action': env.actions[action],
                 })
+                if player_id == 0 and isinstance(learner, BayesianAgent):
+                    decisions.writerow({'run_id': run_id, 'hand_id': index + 1,
+                                        'decision_index': decision, 'seconds': elapsed,
+                                        'expected_utilities': json.dumps(learner.last_utilities),
+                                        'posterior': json.dumps(learner.posterior)})
+                if player_id == 1:
+                    hook = getattr(learner, 'observe_opponent_action', None)
+                    if callable(hook):
+                        # Build an allowlisted public observation. Neither raw_obs.hand
+                        # nor the private-card encoded obs vector leaves this boundary.
+                        observation = {'raw_obs': {'public_card': raw['public_card'],
+                                                  'all_chips': list(raw['all_chips']),
+                                                  'my_chips': raw['my_chips']},
+                                       'legal_actions': dict(state['legal_actions']),
+                                       'action_record': list(state.get('action_record', ())),
+                                       'street_action_record': list(street_history)}
+                        hook(observation, action)
+                    if isinstance(learner, BayesianAgent):
+                        beliefs.writerow({'run_id': run_id, 'hand_id': index + 1,
+                                          'decision_index': decision, 'observed_action': env.actions[action],
+                                          'observations': learner.belief.observations,
+                                          'posterior': json.dumps(learner.posterior),
+                                          'entropy': -sum(p * math.log(p) for p in learner.posterior.values() if p > 0)})
+                street_history.append((player_id, env.actions[action]))
                 state, player_id = env.step(action)
             payoffs = env.get_payoffs()
             reward_hook = getattr(learner, 'observe_reward', None)
@@ -125,16 +187,21 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--num-games', type=positive_int, default=100)
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--agent', choices=['rule_based', 'linucb', 'bayesian'], default='rule-based',
+    parser.add_argument('--agent', choices=['rule_based', 'linucb', 'bayesian'], default='rule_based',
                         help='Player-0 agent')
     parser.add_argument('--opponent', nargs='+', default=['random'],
                         help='Ordered policy names; multiple names enable switching')
     parser.add_argument('--switch-every', type=positive_int, default=25)
     parser.add_argument('--output-dir', type=Path, default=Path('results'))
+    parser.add_argument('--likelihood-model', type=Path)
+    parser.add_argument('--calibration-hands', type=positive_int, default=2000)
+    parser.add_argument('--calibration-seed', type=int, default=1729)
     args = parser.parse_args()
     try:
         run_simulation(args.num_games, args.seed, args.opponent,
-                       args.switch_every, args.output_dir, agent=args.agent)
+                       args.switch_every, args.output_dir, agent=args.agent,
+                       likelihood_path=args.likelihood_model,
+                       calibration_hands=args.calibration_hands, calibration_seed=args.calibration_seed)
     except ValueError as exc:
         parser.error(str(exc))
 
