@@ -18,8 +18,10 @@ class LinUCBAgent:
         if self.alpha < 0:
             raise ValueError('alpha must be nonnegative')
         self.dimension = 9
+        # Each action has its own linear reward model; identity matrices start with uncertainty.
         self.A = {action: np.eye(self.dimension) for action in self.action_names}
         self.b = {action: np.zeros(self.dimension) for action in self.action_names}
+        # Hold decisions until the hand's terminal payoff is known.
         self.pending = []
 
     @staticmethod
@@ -29,6 +31,7 @@ class LinUCBAgent:
         return {'J': 1.0, 'Q': 2.0, 'K': 3.0}.get(card[-1], 0.0) / 3.0
 
     def _features(self, state):
+        # Build a compact context from information visible to the acting player.
         raw = state['raw_obs']
         hand = raw.get('hand')
         public = raw.get('public_card')
@@ -59,6 +62,7 @@ class LinUCBAgent:
             name = self.action_names[action_id]
             inverse = np.linalg.inv(self.A[name])
             theta = np.linalg.solve(self.A[name], self.b[name])
+            # LinUCB adds an uncertainty bonus to the predicted reward.
             score = float(x @ theta + self.alpha * np.sqrt(max(0.0, x @ inverse @ x)))
             if score > best_score:
                 best_score, best_action = score, action_id
@@ -68,6 +72,7 @@ class LinUCBAgent:
     def observe_reward(self, reward):
         """Update all action decisions from the completed hand, then clear them."""
         reward = float(reward)
+        # Add each chosen context to its action model, weighted by the hand payoff.
         for action, x in self.pending:
             self.A[action] += np.outer(x, x)
             self.b[action] += reward * x
