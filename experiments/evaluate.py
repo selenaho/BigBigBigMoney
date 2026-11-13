@@ -176,8 +176,9 @@ def plot_reports(runs, groups, output, window):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('runs', nargs='+', type=Path, help='Run directories to compare')
-    parser.add_argument('--output-dir', type=Path, default=Path('results/evaluation'),
-                        help='Output folder prefix; source run names are appended automatically')
+    parser.add_argument('--output-dir', type=Path,
+                        help='Output folder prefix (default: results/metrics/noise-analysis for one run, '
+                             'results/metrics/comparison for multiple runs); run names are appended')
     parser.add_argument('--window', type=int, default=25)
     parser.add_argument('--recovery-threshold', type=float, default=.5)
     parser.add_argument('--recovery-sustain', type=int, default=5)
@@ -186,7 +187,9 @@ def main():
         parser.error('Window and sustain must be positive; threshold must be in (0, 1]')
     try:
         runs = [analyze_run(p, args.recovery_threshold, args.recovery_sustain) for p in args.runs]
-        output = report_directory(args.output_dir, runs)
+        prefix = args.output_dir or Path('results/metrics') / (
+            'noise-analysis' if len(runs) == 1 else 'comparison')
+        output = report_directory(prefix, runs)
         grouped = write_reports(runs, output, args.window,
                                 args.recovery_threshold, args.recovery_sustain)
         plot_reports(runs, grouped, output, args.window)

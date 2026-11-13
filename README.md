@@ -103,12 +103,18 @@ Noise uses an independent random generator (`--noise-seed`, default `seed + 2`).
 
 ## Metrics and plots
 
-Evaluate one or more saved runs (install `requirements.txt` for Matplotlib):
+Evaluate one or more saved runs:
 
 ```sh
-python -m experiments.evaluate results/run-al_ypooz --output-dir results/noise-analysis
-python -m experiments.evaluate results/run-FIRST results/run-SECOND --output-dir results/comparison --window 25
+python -m experiments.evaluate results/run-al_ypooz
+python -m experiments.evaluate results/run-FIRST results/run-SECOND --window 25
 ```
+
+Simulation runs stay directly under `results/run-*`. Evaluations default to
+`results/metrics/noise-analysis__RUN` for one run and
+`results/metrics/comparison__RUN1__RUN2` for multiple runs. Plot and report
+filenames inside those folders stay unchanged. To use a custom folder prefix,
+pass `--output-dir results/metrics/NAME`; source run names are appended automatically.
 
 The evaluator writes:
 

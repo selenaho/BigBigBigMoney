@@ -1,0 +1,9 @@
+run_id,start_hand,strategy,hands,is_switch,belief_available,recovery_hands,mean_reward
+run-al_ypooz,1,tight_passive,25,False,True,,0.5
+run-al_ypooz,26,maniac,25,True,True,,1.32
+run-al_ypooz,51,loose_passive,25,True,True,,0.28
+run-al_ypooz,76,tight_passive,25,True,True,,0.88
+run-rnw2ffqe,1,loose_aggressive,25,False,True,11,0.18
+run-rnw2ffqe,26,loose_passive,25,True,True,,0.84
+run-rnw2ffqe,51,tight_aggressive,25,True,True,5,0.18
+run-rnw2ffqe,76,maniac,25,True,True,,-0.24
