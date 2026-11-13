@@ -100,3 +100,40 @@ Noise uses an independent random generator (`--noise-seed`, default `seed + 2`).
 `action_id` remain ground truth; `observed_action`, `observed_action_id`, and
 `noise_applied` record what the learner saw. Learner actions are never corrupted.
 `beliefs.csv` records the observed action used for each Bayesian update.
+
+## Metrics and plots
+
+Evaluate one or more saved runs (install `requirements.txt` for Matplotlib):
+
+```sh
+python -m experiments.evaluate results/run-al_ypooz --output-dir results/noise-analysis
+python -m experiments.evaluate results/run-FIRST results/run-SECOND --output-dir results/comparison --window 25
+```
+
+The evaluator writes:
+
+- `summary.csv`: total/mean reward, actual corruption rate, end-of-hand strategy
+  accuracy, probability of the true strategy, entropy, and mean/p95 decision time.
+- `adaptation.csv`: each strategy segment and its recovery time. By default recovery
+  requires five consecutive end-of-hand beliefs assigning at least 50% to the true
+  strategy (`--recovery-threshold`, `--recovery-sustain`). Time counts completed
+  hands through confirmation. Blank recovery means no recovery before the next
+  switch/end, or no applicable beliefs; check `belief_available`. The initial
+  segment is acquisition, not post-switch adaptation (`is_switch=false`).
+- `trajectories.png`: cumulative reward, rolling reward, probability of the true
+  strategy, and reward since switching, averaged over switches within each run.
+- `noise_comparison.png`: mean reward by agent/noise rate, with sample standard
+  deviation across runs when multiple runs are supplied.
+- `report.json`: settings, summaries, per-hand series, segments, and grouped results.
+
+Beliefs carry forward on hands without opponent observations. Strategy metrics
+are unavailable for opponents outside the Bayesian model (such as `random_actions`).
+Decision timing currently exists only for Bayesian agents. Entropy measures
+confidence, not correctness. A low entropy can accompany the wrong strategy.
+
+For noise experiments, run rates such as 0, 0.1, 0.2, and 0.4 with the same set of
+several seeds, hand counts, opponent schedules, and calibration model. Pass those
+run folders to the evaluator. Grouping uses agent and noise rate only, so supply
+comparable runs and avoid duplicate seeds. Error bars describe variability across
+runs, not confidence intervals; one run cannot establish an average noise effect.
+Changed learner decisions can change later game trajectories even with matched seeds.

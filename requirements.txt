@@ -1,1 +1,2 @@
 rlcard
+matplotlib
