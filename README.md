@@ -29,6 +29,18 @@ Payoffs use RLCard's native units. Hand IDs and decision indices start at 1.
 A switch occurs between hands: interval 25 gives changes at hands 26, 51, 76.
 The first hand is not marked as a switch. No private cards are written to logs.
 
+`--opponent random` selects an initial style from the six controlled styles and
+randomly selects a different style every `--switch-every` completed hands. With
+25, switches occur at hands 26, 51, and 76. This interval counts hands, not
+individual betting actions. The schedule uses its own RNG seeded with `seed + 3`,
+so the same seed reproduces the style schedule independently of observation noise.
+Actual style labels appear in `hands.csv`, and `config.json` records the schedule
+mode, candidate styles, and seed.
+
+Use `--opponent random_actions` for the original policy that picks a random legal
+action on every decision. Explicit lists such as `--opponent tight_aggressive
+maniac` still cycle in order. The `random` switching mode must be used alone.
+
 #### Unit test to verify if poker enviroment is working
 
 ```sh
@@ -64,3 +76,27 @@ responses. Planning considers one opponent response followed by a showdown estim
 
 Bayesian runs additionally save `likelihoods.json` (trained model), `beliefs.csv`
 (strategy probabilities), and `decisions.csv` (action values and timing).
+
+## Observation noise
+
+The proposal's observation-noise experiment is implemented as action-label
+substitution. At each opponent decision, `--noise-rate` is the probability of
+reporting a uniformly sampled *different* legal action to the learner. A decision
+with only one legal action is left unchanged. The default rate is zero.
+
+```sh
+python main.py --agent bayesian --opponent random --switch-every 25 --num-games 100 --seed 42 --noise-rate 0.2 --noise-seed 44
+```
+
+One noisy observation is shared by the learner's opponent-action callback and
+its full-hand and current-street action histories. The opponent and game environment
+use actual actions; cards, pot sizes, legal moves, rewards, and strategy labels
+are not corrupted. Calibration continues to use clean simulated actions.
+Rule-based and current LinUCB agents do not consume opponent action histories,
+so their behavior is unaffected by this noise model.
+
+Noise uses an independent random generator (`--noise-seed`, default `seed + 2`).
+`config.json` records its rate, seed, and model. In `actions.csv`, `action` and
+`action_id` remain ground truth; `observed_action`, `observed_action_id`, and
+`noise_applied` record what the learner saw. Learner actions are never corrupted.
+`beliefs.csv` records the observed action used for each Bayesian update.

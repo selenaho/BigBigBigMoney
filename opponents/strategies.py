@@ -43,6 +43,6 @@ class OpponentAgent:
 
 
 def build_policy_registry(action_names):
-    registry = {'random': RandomPolicy(), 'rule_based': RuleBasedPolicy(action_names)}
+    registry = {'random_actions': RandomPolicy(), 'rule_based': RuleBasedPolicy(action_names)}
     registry.update({name: StylePolicy(name, action_names) for name in STRATEGY_NAMES})
     return registry

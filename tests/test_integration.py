@@ -9,6 +9,7 @@ from agents.rule_based_agent import RuleBasedAgent
 from main import run_simulation
 from opponents.strategies import OpponentAgent
 from opponents.switching_controller import SwitchingController
+from opponents.styles import STRATEGY_NAMES
 
 
 class IntegrationTests(unittest.TestCase):
@@ -26,14 +27,14 @@ class IntegrationTests(unittest.TestCase):
             for selected, label in [('rule_based', 'rule_based'), ('linucb', 'linucb'),
                                     (instance, 'RecordingAgent')]:
                 output = run_simulation(num_games=12, agent=selected,
-                                        opponent_names=['random', 'rule_based'],
+                                        opponent_names=['random_actions', 'rule_based'],
                                         switch_every=3, output_dir=directory)
                 with (output / 'hands.csv').open() as f:
                     hands = list(csv.DictReader(f))
                 self.assertEqual({h['agent_0'] for h in hands}, {label})
                 self.assertEqual([h['agent_1'] for h in hands],
-                                 ['random'] * 3 + ['rule_based'] * 3
-                                 + ['random'] * 3 + ['rule_based'] * 3)
+                                 ['random_actions'] * 3 + ['rule_based'] * 3
+                                 + ['random_actions'] * 3 + ['rule_based'] * 3)
                 self.assertEqual([int(h['hand_id']) for h in hands if h['switched'] == '1'],
                                  [4, 7, 10])
                 config = json.loads((output / 'config.json').read_text())
@@ -66,6 +67,25 @@ class IntegrationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             SwitchingController(['a'], 0)
 
+    def test_random_style_switching(self):
+        schedule = SwitchingController(STRATEGY_NAMES, 25, randomize=True, seed=45)
+        expected = [schedule.strategy_for_hand(i) for i in range(100)]
+        self.assertTrue(set(expected) <= set(STRATEGY_NAMES))
+        self.assertEqual([i + 1 for i in range(1, 100) if expected[i] != expected[i - 1]],
+                         [26, 51, 76])
+        repeat = SwitchingController(STRATEGY_NAMES, 25, randomize=True, seed=45)
+        self.assertEqual(repeat.strategy_for_hand(99), expected[99])
+        self.assertEqual([repeat.strategy_for_hand(i) for i in range(100)], expected)
+        with tempfile.TemporaryDirectory() as directory:
+            out = run_simulation(100, 42, ['random'], 25, directory)
+            with (out / 'hands.csv').open() as f:
+                hands = list(csv.DictReader(f))
+            self.assertEqual([h['opponent_strategy'] for h in hands], expected)
+            self.assertEqual([int(h['hand_id']) for h in hands if h['switched'] == '1'],
+                             [26, 51, 76])
+            with self.assertRaises(ValueError):
+                run_simulation(opponent_names=['random', 'maniac'], output_dir=directory)
+
     def test_policy_contract_rejects_illegal_action(self):
         class InvalidPolicy:
             def select_action(self, state, rng):
@@ -80,7 +100,7 @@ class IntegrationTests(unittest.TestCase):
                         for row in csv.DictReader(f)]
 
         with tempfile.TemporaryDirectory() as directory:
-            outputs = [run_simulation(100, 42, ['random', 'rule_based'], 25, directory)
+            outputs = [run_simulation(100, 42, ['random_actions', 'rule_based'], 25, directory)
                        for _ in range(2)]
             for name in ['hands.csv', 'actions.csv']:
                 self.assertEqual(read(outputs[0], name), read(outputs[1], name))

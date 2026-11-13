@@ -173,6 +173,33 @@ class BayesianTests(unittest.TestCase):
                         self.assertIn(action['action'], json.loads(action['legal_actions']))
             self.assertEqual(rows[0], rows[1])
 
+    def test_noisy_actions_drive_belief_updates(self):
+        class RecordingAgent(BayesianAgent):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.observed = []
+
+            def observe_opponent_action(self, state, action):
+                super().observe_opponent_action(state, action)
+                self.observed.append(self.action_names[action])
+
+        agent = RecordingAgent(self.actions, likelihood_model=self.model)
+        with tempfile.TemporaryDirectory() as directory:
+            out = run_simulation(30, 8, ['tight_passive', 'maniac'], 10, directory,
+                                 agent=agent, noise_rate=1, noise_seed=29)
+            with (out / 'actions.csv').open() as f:
+                opponent = [r for r in csv.DictReader(f) if r['player_id'] == '1']
+            with (out / 'beliefs.csv').open() as f:
+                beliefs = list(csv.DictReader(f))
+            self.assertEqual(agent.observed, [r['observed_action'] for r in opponent])
+            self.assertEqual(agent.observed, [r['observed_action'] for r in beliefs])
+            self.assertTrue(all(r['action'] != r['observed_action'] for r in opponent))
+            self.assertEqual(agent.belief.observations, len(opponent))
+            for row in beliefs:
+                probabilities = json.loads(row['posterior']).values()
+                self.assertTrue(all(math.isfinite(p) for p in probabilities))
+                self.assertAlmostEqual(sum(probabilities), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
