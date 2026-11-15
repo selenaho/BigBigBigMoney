@@ -25,20 +25,26 @@ def positive_int(value):
     return number
 
 
-def build_evaluated_agent(agent, action_names, *, likelihood_model=None):
+def build_evaluated_agent(agent, action_names, *, likelihood_model=None,
+                          linucb_alpha=1.0, linucb_window_size=100,
+                          linucb_discount_factor=0.99):
     """Select player 0's strategy"""
     if isinstance(agent, str):
         name = agent
         if agent == 'rule_based':
             agent = RuleBasedAgent(action_names)
-        elif agent == 'linucb':
-            agent = LinUCBAgent(action_names)
+        elif agent in ('linucb', 'linucb_windowed', 'linucb_discounted'):
+            variant = {'linucb': 'standard', 'linucb_windowed': 'windowed',
+                       'linucb_discounted': 'discounted'}[agent]
+            agent = LinUCBAgent(action_names, alpha=linucb_alpha, variant=variant,
+                                window_size=linucb_window_size,
+                                discount_factor=linucb_discount_factor)
         elif agent == 'bayesian':
             agent = BayesianAgent(action_names, likelihood_model=likelihood_model)
         else:
             raise ValueError(f'Unknown player-0 agent: {agent}')
     else:
-        name = type(agent).__name__
+        name = getattr(agent, 'name', type(agent).__name__)
     if not callable(getattr(agent, 'step', None)) or getattr(agent, 'use_raw', False):
         raise ValueError('Player-0 agent must implement step(state) returning legal action IDs')
     return agent, name
@@ -47,10 +53,11 @@ def build_evaluated_agent(agent, action_names, *, likelihood_model=None):
 def run_simulation(num_games=100, seed=42, opponent_names=('random',),
                    switch_every=25, output_dir='results', policy_registry=None, *, agent='rule_based',
                    likelihood_path=None, calibration_hands=2000, calibration_seed=1729,
-                   noise_rate=0.0, noise_seed=None):
+                   noise_rate=0.0, noise_seed=None, linucb_alpha=1.0,
+                   linucb_window_size=100, linucb_discount_factor=0.99):
     """Evaluate one player-0 agent against switching player-1 policies.
 
-    agent is rule_based, linucb, or bayesian.
+    agent is rule_based, linucb, linucb_windowed, linucb_discounted, or bayesian.
     The same player-0 instance persists across all hands and opponent switches.
     An optional observe_reward hook receives player 0's payoff after each hand.
     """
@@ -75,7 +82,9 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
         model = (ActionLikelihoodModel.load(likelihood_path) if likelihood_path else
                  calibrate_likelihoods(env.actions, calibration_hands, calibration_seed))
     learner, agent_name = build_evaluated_agent(
-        agent, env.actions, likelihood_model=model)
+        agent, env.actions, likelihood_model=model, linucb_alpha=linucb_alpha,
+        linucb_window_size=linucb_window_size,
+        linucb_discount_factor=linucb_discount_factor)
     opponent = OpponentAgent(registry[schedule.strategy_for_hand(0)], seed=seed + 1)
     agents = [learner, opponent]
     env.set_agents(agents)
@@ -94,7 +103,11 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
                                     'model': 'uniform_other_legal_action',
                                     'target': 'learner_observations_of_opponent'}}
     if isinstance(learner, LinUCBAgent):
-        config['linucb_alpha'] = learner.alpha
+        config['linucb'] = {'variant': learner.variant, 'alpha': learner.alpha}
+        if learner.variant == 'windowed':
+            config['linucb']['window_size'] = learner.window_size
+        elif learner.variant == 'discounted':
+            config['linucb']['discount_factor'] = learner.discount_factor
     if isinstance(learner, BayesianAgent):
         config['bayesian'] = {'variant': 'standard',
                               'strategies': list(learner.belief.strategies),
@@ -176,6 +189,10 @@ def run_simulation(num_games=100, seed=42, opponent_names=('random',),
                                         'decision_index': decision, 'seconds': elapsed,
                                         'expected_utilities': json.dumps(learner.last_utilities),
                                         'posterior': json.dumps(learner.posterior)})
+                elif player_id == 0 and isinstance(learner, LinUCBAgent):
+                    decisions.writerow({'run_id': run_id, 'hand_id': index + 1,
+                                        'decision_index': decision, 'seconds': elapsed,
+                                        'expected_utilities': '', 'posterior': ''})
                 if player_id == 1:
                     hook = getattr(learner, 'observe_opponent_action', None)
                     if callable(hook):
@@ -221,8 +238,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--num-games', type=positive_int, default=100)
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--agent', choices=['rule_based', 'linucb', 'bayesian'], default='rule_based',
+    parser.add_argument('--agent', choices=['rule_based', 'linucb', 'linucb_windowed',
+                                            'linucb_discounted', 'bayesian'], default='rule_based',
                         help='Player-0 agent')
+    parser.add_argument('--linucb-alpha', type=float, default=1.0,
+                        help='LinUCB exploration strength (all LinUCB variants)')
+    parser.add_argument('--linucb-window-size', type=positive_int, default=100,
+                        help='Number of recent learner decisions kept by linucb_windowed')
+    parser.add_argument('--linucb-discount-factor', type=float, default=0.99,
+                        help='Past-data weight per learner decision for linucb_discounted (0 < gamma < 1)')
     parser.add_argument('--opponent', nargs='+', default=['random'],
                         help='random switches among six styles; otherwise ordered policy names (including random_actions)')
     parser.add_argument('--switch-every', type=positive_int, default=25,
@@ -241,7 +265,10 @@ def main():
                        args.switch_every, args.output_dir, agent=args.agent,
                        likelihood_path=args.likelihood_model,
                        calibration_hands=args.calibration_hands, calibration_seed=args.calibration_seed,
-                       noise_rate=args.noise_rate, noise_seed=args.noise_seed)
+                       noise_rate=args.noise_rate, noise_seed=args.noise_seed,
+                       linucb_alpha=args.linucb_alpha,
+                       linucb_window_size=args.linucb_window_size,
+                       linucb_discount_factor=args.linucb_discount_factor)
     except ValueError as exc:
         parser.error(str(exc))
 

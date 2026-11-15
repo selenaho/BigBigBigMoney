@@ -17,6 +17,8 @@ The default number of games is 100 and the default seed is 42:
 ```sh
 python main.py --agent rule_based --opponent random --switch-every 25 --num-games 100 --seed 42
 python main.py --agent linucb --opponent random --switch-every 25 --num-games 100 --seed 42
+python main.py --agent linucb_windowed --linucb-window-size 100 --opponent random --num-games 1000
+python main.py --agent linucb_discounted --linucb-discount-factor 0.99 --opponent random --num-games 1000
 python main.py --agent bayesian --opponent random --switch-every 25 --num-games 100 --seed 42
 ```
 
@@ -56,6 +58,27 @@ Unpaired jack: check, fold, call, raise.
 The baseline uses its own card and the public card, with no opponent modeling or 
 learning.
 
+## LinUCB agents
+
+`--agent linucb` uses standard LinUCB and retains every past decision. For
+non-stationary opponents, `--agent linucb_windowed` keeps only the latest
+`--linucb-window-size` learner decisions (default 100), while
+`--agent linucb_discounted` weights past decisions by powers of
+`--linucb-discount-factor` (default 0.99; must be between 0 and 1). All variants
+use `--linucb-alpha` (default 1.0) to set the exploration bonus. Standard LinUCB
+does not use the window size or discount factor.
+
+Each chosen action is paired with its context and, once the hand ends, that
+hand's payoff. Window and discount updates process these samples in the order
+the LinUCB agent made its decisions. The run's `config.json` records the selected
+variant and its applicable parameters.
+
+```sh
+python main.py --agent linucb --linucb-alpha 1.0 --opponent maniac --num-games 1000
+python main.py --agent linucb_windowed --linucb-window-size 200 --opponent random --num-games 1000
+python main.py --agent linucb_discounted --linucb-discount-factor 0.97 --opponent random --num-games 1000
+```
+
 ## Standard Bayesian agent
 
 Starts with equal probabilities for six opponent styles: `tight_aggressive`,
@@ -75,7 +98,8 @@ Actions maximize estimated chip payoff using possible opponent hands and predict
 responses. Planning considers one opponent response followed by a showdown estimate.
 
 Bayesian runs additionally save `likelihoods.json` (trained model), `beliefs.csv`
-(strategy probabilities), and `decisions.csv` (action values and timing).
+(strategy probabilities), and `decisions.csv` (action values and timing). LinUCB
+runs also log per-decision timing in `decisions.csv` for overhead comparisons.
 
 ## Observation noise
 
@@ -134,7 +158,7 @@ The evaluator writes:
 
 Beliefs carry forward on hands without opponent observations. Strategy metrics
 are unavailable for opponents outside the Bayesian model (such as `random_actions`).
-Decision timing currently exists only for Bayesian agents. Entropy measures
+Decision timing is logged for Bayesian and LinUCB agents. Entropy measures
 confidence, not correctness. A low entropy can accompany the wrong strategy.
 
 For noise experiments, run rates such as 0, 0.1, 0.2, and 0.4 with the same set of

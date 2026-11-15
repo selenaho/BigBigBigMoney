@@ -1,0 +1,2 @@
+run_id,learner,seed,configured_noise_rate,hands,total_reward,mean_reward,opponent_actions,corrupted_actions,observed_noise_rate,mean_true_strategy_probability,strategy_accuracy,mean_entropy_nats,mean_decision_ms,p95_decision_ms
+run-1af_eq9z,linucb,42,0.0,1000,479.0,0.479,1749,0,0.0,,,,0.018957616961417303,0.021582935005426407

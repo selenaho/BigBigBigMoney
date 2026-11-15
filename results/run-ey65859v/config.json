@@ -1,0 +1,41 @@
+{
+  "game": "leduc-holdem",
+  "num_games": 1000,
+  "seed": 42,
+  "opponent_seed": 43,
+  "opponents": [
+    "random"
+  ],
+  "opponent_schedule": {
+    "mode": "random",
+    "seed": 45,
+    "strategies": [
+      "tight_aggressive",
+      "loose_aggressive",
+      "tight_passive",
+      "loose_passive",
+      "maniac",
+      "calling_station"
+    ]
+  },
+  "switch_every": 25,
+  "learner": "linucb_discounted",
+  "learner_seat": 0,
+  "action_names": [
+    "call",
+    "raise",
+    "fold",
+    "check"
+  ],
+  "observation_noise": {
+    "rate": 0.0,
+    "seed": 44,
+    "model": "uniform_other_legal_action",
+    "target": "learner_observations_of_opponent"
+  },
+  "linucb": {
+    "variant": "discounted",
+    "alpha": 1.0,
+    "discount_factor": 0.97
+  }
+}

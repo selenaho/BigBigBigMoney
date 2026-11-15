@@ -1,5 +1,7 @@
 """Standard per-action LinUCB agent for RLCard's Leduc Hold'em state."""
 
+from collections import deque
+
 import numpy as np
 
 
@@ -12,17 +14,34 @@ class LinUCBAgent:
 
     use_raw = False
 
-    def __init__(self, action_names, alpha=1.0):
+    def __init__(self, action_names, alpha=1.0, variant='standard',
+                 window_size=None, discount_factor=None):
         self.action_names = tuple(action_names)
         self.alpha = float(alpha)
         if self.alpha < 0:
             raise ValueError('alpha must be nonnegative')
+        if variant not in ('standard', 'windowed', 'discounted'):
+            raise ValueError("variant must be 'standard', 'windowed', or 'discounted'")
+        if variant == 'windowed' and (window_size is None or int(window_size) < 1):
+            raise ValueError('window_size must be positive for windowed LinUCB')
+        if variant == 'discounted' and (discount_factor is None or
+                                         not 0 < float(discount_factor) < 1):
+            raise ValueError('discount_factor must be between 0 and 1 for discounted LinUCB')
+        self.variant = variant
+        self.window_size = int(window_size) if variant == 'windowed' else None
+        self.discount_factor = float(discount_factor) if variant == 'discounted' else None
+        self.name = {'standard': 'linucb', 'windowed': 'linucb_windowed',
+                     'discounted': 'linucb_discounted'}[variant]
         self.dimension = 9
         # Each action has its own linear reward model; identity matrices start with uncertainty.
-        self.A = {action: np.eye(self.dimension) for action in self.action_names}
-        self.b = {action: np.zeros(self.dimension) for action in self.action_names}
+        self._reset_statistics()
         # Hold decisions until the hand's terminal payoff is known.
         self.pending = []
+        self.history = deque(maxlen=self.window_size) if variant == 'windowed' else None
+
+    def _reset_statistics(self):
+        self.A = {action: np.eye(self.dimension) for action in self.action_names}
+        self.b = {action: np.zeros(self.dimension) for action in self.action_names}
 
     @staticmethod
     def _rank(card):
@@ -72,11 +91,30 @@ class LinUCBAgent:
     def observe_reward(self, reward):
         """Update all action decisions from the completed hand, then clear them."""
         reward = float(reward)
-        # Add each chosen context to its action model, weighted by the hand payoff.
+        # Apply feedback in decision order; each decision from this hand gets its payoff.
         for action, x in self.pending:
+            if self.variant == 'windowed':
+                self.history.append((action, x.copy(), reward))
+                self._rebuild_windowed_statistics()
+            elif self.variant == 'discounted':
+                # Decay old data while keeping the identity regularizer fixed.
+                gamma = self.discount_factor
+                for name in self.action_names:
+                    self.A[name] = gamma * self.A[name] + (1 - gamma) * np.eye(self.dimension)
+                    self.b[name] *= gamma
+                self.A[action] += np.outer(x, x)
+                self.b[action] += reward * x
+            else:
+                self.A[action] += np.outer(x, x)
+                self.b[action] += reward * x
+        self.pending.clear()
+
+    def _rebuild_windowed_statistics(self):
+        """Rebuild models from the most recent N completed decision samples."""
+        self._reset_statistics()
+        for action, x, reward in self.history:
             self.A[action] += np.outer(x, x)
             self.b[action] += reward * x
-        self.pending.clear()
 
     def eval_step(self, state):
         action = self.step(state)

@@ -1,0 +1,3 @@
+run_id,learner,seed,configured_noise_rate,hands,total_reward,mean_reward,opponent_actions,corrupted_actions,observed_noise_rate,mean_true_strategy_probability,strategy_accuracy,mean_entropy_nats,mean_decision_ms,p95_decision_ms
+run-ey65859v,linucb_discounted,42,0.0,1000,22.0,0.022,1571,0,0.0,,,,0.029214123445647246,0.06508129881694912
+run-auply_2r,linucb,42,0.0,1000,-403.5,-0.4035,691,0,0.0,,,,0.02002405053152337,0.02151471562683582
