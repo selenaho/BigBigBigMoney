@@ -79,15 +79,20 @@ python main.py --agent linucb_windowed --linucb-window-size 200 --opponent rando
 python main.py --agent linucb_discounted --linucb-discount-factor 0.97 --opponent random --num-games 1000
 ```
 
-## Standard Bayesian agent
+## Bayesian agents
 
 Starts with equal probabilities for six opponent styles: `tight_aggressive`,
 `loose_aggressive`, `tight_passive`, `loose_passive`, `maniac`, and `calling_station`.
-Updates beliefs after each opponent action and retains all historical evidence.
+Updates beliefs after each opponent action. `--agent bayesian` retains all
+historical evidence. `--agent bayesian_windowed` uses only the latest
+`--bayesian-window-size` opponent observations (default 50). The window spans
+hands and switches; it counts opponent actions, not hands. The original prior
+stays fixed, and old likelihood contributions are removed as new ones arrive.
 Opponent private cards and true strategy labels are hidden from the agent.
 
 ```sh
 python main.py --agent bayesian --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
+python main.py --agent bayesian_windowed --bayesian-window-size 50 --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
 ```
 
 The first step automatically trains action likelihoods using 2,000 simulated hands
@@ -100,6 +105,8 @@ responses. Planning considers one opponent response followed by a showdown estim
 Bayesian runs additionally save `likelihoods.json` (trained model), `beliefs.csv`
 (strategy probabilities), and `decisions.csv` (action values and timing). LinUCB
 runs also log per-decision timing in `decisions.csv` for overhead comparisons.
+`config.json` records the Bayesian variant and, for windowed runs, the window size.
+Both Bayesian variants can reuse the same calibrated likelihood model.
 
 ## Observation noise
 
