@@ -88,11 +88,16 @@ historical evidence. `--agent bayesian_windowed` uses only the latest
 `--bayesian-window-size` opponent observations (default 50). The window spans
 hands and switches; it counts opponent actions, not hands. The original prior
 stays fixed, and old likelihood contributions are removed as new ones arrive.
+`--agent bayesian_decay` gradually discounts older evidence using
+`--bayesian-decay-factor` (default 0.95; strictly between 0 and 1). An observation
+k opponent actions ago has weight `gamma ** k`; the newest has weight 1.
+Decay applies per opponent observation across hands and switches, with a fixed prior.
 Opponent private cards and true strategy labels are hidden from the agent.
 
 ```sh
 python main.py --agent bayesian --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
 python main.py --agent bayesian_windowed --bayesian-window-size 50 --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
+python main.py --agent bayesian_decay --bayesian-decay-factor 0.95 --opponent tight_aggressive maniac --switch-every 100 --num-games 1000
 ```
 
 The first step automatically trains action likelihoods using 2,000 simulated hands
@@ -105,8 +110,8 @@ responses. Planning considers one opponent response followed by a showdown estim
 Bayesian runs additionally save `likelihoods.json` (trained model), `beliefs.csv`
 (strategy probabilities), and `decisions.csv` (action values and timing). LinUCB
 runs also log per-decision timing in `decisions.csv` for overhead comparisons.
-`config.json` records the Bayesian variant and, for windowed runs, the window size.
-Both Bayesian variants can reuse the same calibrated likelihood model.
+`config.json` records the Bayesian variant and its window size or decay factor.
+All three Bayesian variants can reuse the same calibrated likelihood model.
 
 ## Observation noise
 

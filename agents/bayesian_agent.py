@@ -18,7 +18,8 @@ class BayesianAgent:
     """
     use_raw = False
 
-    def __init__(self, action_names, likelihood_model=None, prior=None, *, window_size=None):
+    def __init__(self, action_names, likelihood_model=None, prior=None, *, window_size=None,
+                 decay_factor=None):
         self.action_names = tuple(action_names)
         if set(self.action_names) != {'call', 'raise', 'fold', 'check'}:
             raise ValueError('BayesianAgent requires the four Leduc actions')
@@ -26,7 +27,7 @@ class BayesianAgent:
         if self.likelihood_model.action_names != self.action_names:
             raise ValueError('Likelihood model action mapping does not match environment')
         self.belief = BayesianBelief(self.likelihood_model.strategies, prior=prior,
-                                    window_size=window_size)
+                                    window_size=window_size, decay_factor=decay_factor)
         self.hand = None
         self.hand_observations = []
         self.last_utilities = {}

@@ -1,4 +1,4 @@
-"""Empirical context likelihoods and stable standard/windowed Bayes updates."""
+"""Empirical context likelihoods and stable standard, windowed, and decay Bayes."""
 
 from collections import defaultdict, deque
 import json
@@ -22,19 +22,31 @@ def context_key(state, action_names):
 
 
 class BayesianBelief:
-    def __init__(self, strategies=STRATEGY_NAMES, prior=None, *, window_size=None):
+    def __init__(self, strategies=STRATEGY_NAMES, prior=None, *, window_size=None,
+                 decay_factor=None):
         self.strategies = tuple(strategies)
         if not self.strategies or len(set(self.strategies)) != len(self.strategies):
             raise ValueError('Strategies must be nonempty and unique')
         if window_size is not None and (isinstance(window_size, bool) or
                                        not isinstance(window_size, int) or window_size < 1):
             raise ValueError('window_size must be a positive integer or None')
+        if decay_factor is not None and (not math.isfinite(decay_factor) or
+                                         not 0 < decay_factor < 1):
+            raise ValueError('decay_factor must be finite and strictly between 0 and 1')
+        if window_size is not None and decay_factor is not None:
+            raise ValueError('Choose window_size or decay_factor, not both')
         values = np.ones(len(self.strategies)) if prior is None else np.asarray(prior, dtype=float)
         if values.shape != (len(self.strategies),) or not np.all(np.isfinite(values)) or np.any(values <= 0):
             raise ValueError('prior must have one finite positive weight per strategy')
         self.prior = values / values.sum()
         self.window_size = window_size
-        self.variant = 'standard' if window_size is None else 'windowed'
+        self.decay_factor = decay_factor
+        if decay_factor is not None:
+            self.variant = 'decay'
+        elif window_size is not None:
+            self.variant = 'windowed'
+        else:
+            self.variant = 'standard'
         self.history = deque(maxlen=window_size) if window_size is not None else None
         self.log_evidence = np.zeros(len(values))
         self.observations = 0
@@ -50,11 +62,15 @@ class BayesianBelief:
         if values.shape != self.prior.shape or np.any(values <= 0) or np.any(values > 1) or not np.all(np.isfinite(values)):
             raise ValueError('likelihoods must be finite probabilities in (0, 1]')
         evidence = np.log(values)
-        if self.history is None:
+        if self.variant == 'standard':
             self.log_evidence += evidence
-        else:
+        elif self.variant == 'windowed':
             self.history.append(evidence)
             self.log_evidence = np.sum(self.history, axis=0)
+        elif self.variant == 'decay':
+            # Discount accumulated log likelihoods, never the prior.
+            self.log_evidence *= self.decay_factor
+            self.log_evidence += evidence
         # Remove a shared offset: it cannot affect posterior odds.
         self.log_evidence -= self.log_evidence.max()
         self.observations += 1

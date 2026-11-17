@@ -106,11 +106,74 @@ class BayesianTests(unittest.TestCase):
         self.assertEqual(agent.belief.observations, 2)
         self.assertEqual(len(agent.belief.history), 1)
 
+    def test_decay_matches_weighted_likelihood_formula(self):
+        prior = np.array([.3, .7])
+        observations = [np.array([.2, .8]), np.array([.9, .1]),
+                        np.array([.6, .4]), np.array([.05, .95])]
+        for gamma in (.01, .7, .999):
+            model = BayesianBelief(('a', 'b'), prior=prior, decay_factor=gamma)
+            np.testing.assert_allclose(model.probabilities, prior)
+            for i, likelihood in enumerate(observations):
+                model.update(likelihood)
+                weights = gamma ** np.arange(i, -1, -1)
+                logp = np.log(prior) + sum(w * np.log(v) for w, v in
+                                          zip(weights, observations[:i + 1]))
+                expected = np.exp(logp - logp.max())
+                np.testing.assert_allclose(model.probabilities, expected / expected.sum())
+            self.assertEqual(model.variant, 'decay')
+            self.assertEqual(model.observations, 4)
+            self.assertIsNone(model.history)
+
+    def test_decay_forgets_earlier_style_after_switch(self):
+        standard = BayesianBelief(('a', 'b'))
+        decayed = BayesianBelief(('a', 'b'), decay_factor=.8)
+        for model in (standard, decayed):
+            for _ in range(100):
+                model.update([.9, .1])
+            for _ in range(15):
+                model.update([.1, .9])
+        self.assertGreater(standard.probabilities[0], .99)
+        self.assertGreater(decayed.probabilities[1], .99)
+
+    def test_decay_is_stable_and_returns_to_fixed_prior_with_neutral_evidence(self):
+        prior = np.array([.3, .7])
+        model = BayesianBelief(('a', 'b'), prior=prior, decay_factor=.8)
+        for _ in range(10000):
+            model.update([1e-200, .9])
+        self.assertTrue(np.isfinite(model.probabilities).all())
+        before = model.probabilities.copy()
+        evidence = model.log_evidence.copy()
+        count = model.observations
+        with self.assertRaises(ValueError):
+            model.update([0, 1])
+        np.testing.assert_array_equal(model.probabilities, before)
+        np.testing.assert_array_equal(model.log_evidence, evidence)
+        self.assertEqual(model.observations, count)
+        for _ in range(200):
+            model.update([.5, .5])
+        # Only evidence decays: the nonuniform original prior is preserved.
+        np.testing.assert_allclose(model.probabilities, prior, atol=1e-12)
+
+    def test_decay_persists_across_hands_without_an_extra_decay_step(self):
+        agent = BayesianAgent(self.actions, likelihood_model=self.model, decay_factor=.8)
+        agent.begin_hand(self.state())
+        agent.observe_opponent_action(self.state(), self.actions.index('raise'))
+        posterior = agent.posterior
+        agent.begin_hand(self.state(hand='SK'))
+        self.assertEqual(agent.posterior, posterior)
+        self.assertEqual(agent.belief.observations, 1)
+        self.assertEqual(agent.hand_observations, [])
+        agent.observe_opponent_action(self.state(hand='SK'), self.actions.index('fold'))
+        self.assertEqual(agent.belief.observations, 2)
+
     def test_validation(self):
         for kwargs in ({'strategies': ()}, {'strategies': ('a', 'a')},
                        {'prior': [0] * 6}, {'prior': [float('nan')] * 6}, {'prior': [.5]},
                        {'window_size': 0}, {'window_size': -1}, {'window_size': 1.5},
-                       {'window_size': True}):
+                       {'window_size': True}, {'decay_factor': 0}, {'decay_factor': 1},
+                       {'decay_factor': -.5}, {'decay_factor': 1.1},
+                       {'decay_factor': float('nan')}, {'decay_factor': float('inf')},
+                       {'window_size': 5, 'decay_factor': .9}):
             with self.assertRaises(ValueError):
                 BayesianBelief(**kwargs)
         belief = BayesianBelief(('a', 'b'))
@@ -256,40 +319,42 @@ class BayesianTests(unittest.TestCase):
                 self.assertTrue(all(math.isfinite(p) for p in probabilities))
                 self.assertAlmostEqual(sum(probabilities), 1)
 
-    def test_windowed_simulation_noise_logs_and_evaluation(self):
+    def test_adaptive_simulation_noise_logs_and_evaluation(self):
         with tempfile.TemporaryDirectory() as directory:
             path = directory + '/model.json'
             self.model.save(path)
-            for noise_rate in (0, .4):
-                repeated = []
-                for _ in range(2):
-                    out = run_simulation(30, 42, ['tight_passive', 'maniac'], 5, directory,
-                                         agent='bayesian_windowed', likelihood_path=path,
-                                         bayesian_window_size=3, noise_rate=noise_rate)
-                    config = json.loads((out / 'config.json').read_text())
-                    self.assertEqual(config['learner'], 'bayesian_windowed')
-                    self.assertEqual(config['bayesian']['variant'], 'windowed')
-                    self.assertEqual(config['bayesian']['window_size'], 3)
-                    with (out / 'actions.csv').open() as f:
-                        actions = list(csv.DictReader(f))
-                    for row in actions:
-                        self.assertIn(row['action'], json.loads(row['legal_actions']))
-                    opponent = [row for row in actions if row['player_id'] == '1']
-                    with (out / 'beliefs.csv').open() as f:
-                        beliefs = list(csv.DictReader(f))
-                    self.assertEqual([r['observed_action'] for r in beliefs],
-                                     [r['observed_action'] for r in opponent])
-                    self.assertEqual([int(r['observations']) for r in beliefs],
-                                     list(range(1, len(opponent) + 1)))
-                    for row in beliefs:
-                        row.pop('run_id')
-                        self.assertAlmostEqual(sum(json.loads(row['posterior']).values()), 1)
-                    repeated.append(beliefs)
-                    report = analyze_run(out)
-                    self.assertEqual(report['summary']['learner'], 'bayesian_windowed')
-                    self.assertEqual(report['summary']['hands'], 30)
-                    self.assertTrue(all(s['belief_available'] for s in report['segments']))
-                self.assertEqual(*repeated)
+            for variant, parameter, value in (('windowed', 'window_size', 3),
+                                               ('decay', 'decay_factor', .8)):
+                for noise_rate in (0, .4):
+                    repeated = []
+                    for _ in range(2):
+                        out = run_simulation(30, 42, ['tight_passive', 'maniac'], 5, directory,
+                                             agent='bayesian_' + variant, likelihood_path=path,
+                                             noise_rate=noise_rate, **{'bayesian_' + parameter: value})
+                        config = json.loads((out / 'config.json').read_text())
+                        self.assertEqual(config['learner'], 'bayesian_' + variant)
+                        self.assertEqual(config['bayesian']['variant'], variant)
+                        self.assertEqual(config['bayesian'][parameter], value)
+                        with (out / 'actions.csv').open() as f:
+                            actions = list(csv.DictReader(f))
+                        for row in actions:
+                            self.assertIn(row['action'], json.loads(row['legal_actions']))
+                        opponent = [row for row in actions if row['player_id'] == '1']
+                        with (out / 'beliefs.csv').open() as f:
+                            beliefs = list(csv.DictReader(f))
+                        self.assertEqual([r['observed_action'] for r in beliefs],
+                                         [r['observed_action'] for r in opponent])
+                        self.assertEqual([int(r['observations']) for r in beliefs],
+                                         list(range(1, len(opponent) + 1)))
+                        for row in beliefs:
+                            row.pop('run_id')
+                            self.assertAlmostEqual(sum(json.loads(row['posterior']).values()), 1)
+                        repeated.append(beliefs)
+                        report = analyze_run(out)
+                        self.assertEqual(report['summary']['learner'], 'bayesian_' + variant)
+                        self.assertEqual(report['summary']['hands'], 30)
+                        self.assertTrue(all(s['belief_available'] for s in report['segments']))
+                    self.assertEqual(*repeated)
 
 
 if __name__ == '__main__':
